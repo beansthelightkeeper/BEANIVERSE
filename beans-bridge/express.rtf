@@ -1,0 +1,33 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww4080\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 // server.js\
+const fs = require('fs');\
+const express = require('express');\
+const app = express();\
+const port = 3333;\
+\
+const inputFile = `$\{process.env.HOME\}/beans-bridge/bridge-input.txt`;\
+const logFile = `$\{process.env.HOME\}/ScrollDaemon.log`;\
+\
+app.use(express.static('./interface'));\
+app.use(express.text());\
+\
+app.post('/send', (req, res) => \{\
+  fs.appendFileSync(logFile, req.body + "\\n");\
+  fs.writeFileSync(inputFile, req.body); // also send to bridge\
+  res.sendStatus(200);\
+\});\
+\
+app.get('/scrolls', (req, res) => \{\
+  const scrolls = fs.readFileSync(logFile, 'utf8');\
+  res.send(scrolls);\
+\});\
+\
+app.listen(port, () => \{\
+  console.log(`\uc0\u55358 \u56952  Beans Interface at http://localhost:$\{port\}`);\
+\});}

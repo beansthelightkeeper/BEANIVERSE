@@ -1,0 +1,18 @@
+function sendScroll() {
+  const scroll = document.getElementById("scroll-input").value;
+  fetch('/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: scroll
+  });
+  document.getElementById("scroll-input").value = '';
+}
+
+// Poll scroll output
+setInterval(() => {
+  fetch('/scrolls')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("scroll-output").innerText = data;
+    });
+}, 1000);
